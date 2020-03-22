@@ -9,10 +9,10 @@ public abstract class CoinChanger {
         // Anything wrong? Throw an IllegalArgumentException.
         //
         // Error situations and messages are:
-        //   "Amount must be at least 1");
-        //   "At least one denomination is required");
-        //   "Denominations must all be positive");
-        //   "Denominations must have a 1-unit coin");
+        //   "Amount must be at least 1"
+        //   "At least one denomination is required"
+        //   "Denominations must all be positive"
+        //   "Denominations must have a 1-unit coin"
     }
 
     public static class TopDown extends CoinChanger {
@@ -23,7 +23,7 @@ public abstract class CoinChanger {
             // do this recursively, so write a separate, private, recursive,
             // "helper" method. This method here will call that recursive
             // method with the memo object and the initial amount.
-            return 0; // TODO change this, of course
+            return 0; // TODO change this line, of course
         }
     }
 
@@ -33,7 +33,7 @@ public abstract class CoinChanger {
 
             // TODO: Implement this method using the bottom-up approach with
             // a table.
-            return 0; // TODO change this, of course
+            return 0; // TODO change this line, of course
         }
     }
 }
