@@ -1,29 +1,53 @@
 import java.util.Set;
-// TODO of course, you may wish to import more things...
+import java.util.HashMap;
+
 
 public abstract class CoinChanger {
     abstract public int minCoins(int amount, Set<Integer> denominations);
 
     private static void checkArguments(int amount, Set<Integer> denominations) {
-        // TODO: Do all of your checks here, according to the lab instructions.
-        // Anything wrong? Throw an IllegalArgumentException.
-        //
-        // Error situations and messages are:
-        //   "Amount must be at least 1"
-        //   "At least one denomination is required"
-        //   "Denominations must all be positive"
-        //   "Denominations must have a 1-unit coin"
+        if (amount < 1) {
+            throw new IllegalArgumentException("Amount must be at least 1");
+        }
+        if (denominations.isEmpty()) {
+            throw new IllegalArgumentException("At least one denomination is required");
+        }
+        for (var d : denominations) {
+            if (d < 0) {
+                throw new IllegalArgumentException("Denominations must all be positive");
+            }
+        }
+        if (denominations.contains(1) == false) {
+            throw new IllegalArgumentException("Denominations must have a 1-unit coin");
+        }
     }
 
+    private static HashMap<String, Integer> memo = new HashMap<>();
+    
     public static class TopDown extends CoinChanger {
         public int minCoins(int amount, Set<Integer> denominations) {
             checkArguments(amount, denominations);
 
-            // TODO: Do the top-down-with-memoization algorithm here. You should
-            // do this recursively, so write a separate, private, recursive,
-            // "helper" method. This method here will call that recursive
-            // method with the memo object and the initial amount.
-            return 0; // TODO change this line, of course
+            var memoKey =  amount + "" + denominations;
+            if (memo.containsKey(memoKey)) {
+                return memo.get(memoKey);
+            }
+
+            var result = Integer.MAX_VALUE;
+            for (var d : denominations) {
+                if (amount < d) {
+                    continue;
+                } else if (amount == d) {
+                    result = 1;
+                } else {
+                    var newResult = minCoins(amount - d, denominations);
+                    if (newResult < result) {
+                        result = 1 + newResult;
+                    }
+                }
+            }
+            memo.put(memoKey, result);
+            return result;
         }
     }
 
@@ -31,9 +55,23 @@ public abstract class CoinChanger {
         public int minCoins(int amount, Set<Integer> denominations) {
             checkArguments(amount, denominations);
 
-            // TODO: Implement this method using the bottom-up approach with
-            // a table.
-            return 0; // TODO change this line, of course
+            var newTable = new int[amount + 1];
+            newTable[0] = 0;
+            for (var i = 0; i <= amount; i++) {
+                var newestResult = Integer.MAX_VALUE;
+                for (var d : denominations) {
+                    if (i < d) {
+                        continue;
+                    } if (newTable[i - d] >= 0 && newTable[i - d] < newestResult) {
+                        newestResult = newTable[i - d] + 1;
+                    } if (newestResult == Integer.MAX_VALUE) {
+                        newTable[i] = -1;
+                    } else {
+                        newTable[i] = newestResult;
+                    }
+                }
+            }
+            return newTable[amount]; 
         }
     }
 }
